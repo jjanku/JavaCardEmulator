@@ -1,0 +1,10 @@
+<host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/apdu_service_desc"
+    android:requireDeviceUnlock="false">
+    <aid-group android:description="@string/aid_group_desc"
+        android:category="other">
+        <!-- "helloworld" in hexadecimal format -->
+        <!-- TODO: replace with your applet's AID -->
+        <aid-filter android:name="68656c6c6f776f726c64"/>
+    </aid-group>
+</host-apdu-service>

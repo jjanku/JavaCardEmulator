@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">JavaCardEmulator</string>
+    <string name="apdu_service_desc">JavaCard Emulator Apdu Service</string>
+    <string name="aid_group_desc">JavaCard Emulated Applets</string>
 </resources>
