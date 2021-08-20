@@ -32,12 +32,32 @@ class EmulatorApduService : HostApduService() {
         simulator.installApplet(appletAID, appletClass)
     }
 
+    private fun logCommand(commandApdu: ByteArray) {
+        val (cla, ins, p1, p2) = commandApdu.take(4).map { "%#04x".format(it) }
+        val dataLength = commandApdu.size - 4
+
+        val msg = "Command: CLA=$cla, INS=$ins, P1=$p1, P2=$p2, data=$dataLength B"
+        Log.d(TAG, msg)
+    }
+
+    private fun logResponse(responseApdu: ByteArray) {
+        val status = responseApdu
+            .takeLast(2)
+            .map { it.toUByte() }
+            .fold(0u) { acc, byte: UByte -> (acc shl 8) + byte }
+            .toInt()
+            .let { "%#06x".format(it) }
+        val dataLength = responseApdu.size - 2
+
+        Log.d(TAG, "Response: status=$status, data=$dataLength B")
+    }
+
     override fun processCommandApdu(commandApdu: ByteArray, extras: Bundle?): ByteArray? {
-        val header = commandApdu.take(4).toTypedArray()
-        Log.d(TAG, "Processing new APDU(CLA=%x, INS=%x, P1=%x, P2=%x".format(*header))
+        logCommand(commandApdu)
 
         serviceWorkerScope.launch {
             val responseApdu = simulator.transmitCommand(commandApdu)
+            logResponse(responseApdu)
             sendResponseApdu(responseApdu)
         }
 
